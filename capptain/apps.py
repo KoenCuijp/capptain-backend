@@ -2,5 +2,6 @@ from django.apps import AppConfig
 
 
 class MyAppConfig(AppConfig):
-    name = "my_app"
-    verbose_name = "Poetry Template App"
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "capptain"
+    verbose_name = "Capptain - backend"

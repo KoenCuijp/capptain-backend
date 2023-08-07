@@ -51,7 +51,7 @@ or
 
 ```
 $ poetry shell
-(my_app) $ pytest
+(capptain) $ pytest
 ```
 
 The full suite is controlled by `tox`, which contains a set of environments that will format, lint,
