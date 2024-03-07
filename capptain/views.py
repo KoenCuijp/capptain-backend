@@ -8,9 +8,12 @@ from .serializers import CreateMatchSarializer, GetMatchSerializer
 
 
 # Create your views here.
-class GetMatchesView(generics.ListAPIView):
-    queryset = Match.objects.all()
+class GetMatchesView(APIView):
+    all_matches = Match.objects.all()
     serializer_class = GetMatchSerializer
+
+    def get(self, request: HttpRequest) -> Response:
+        ...
 
 
 class GetMatchView(APIView):
