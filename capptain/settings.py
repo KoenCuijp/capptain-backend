@@ -4,8 +4,7 @@ DATABASES = {
         "NAME": "capptain",  # The name of the PostgreSQL database
         "USER": "localhost",  # User for local development
         "PASSWORD": "localhost",  # Password for local development
-        "HOST": "localhost",  # IP of the docker container
-        # "HOST": "172.18.0.2",  # IP of the docker container
+        "HOST": "capptain-database",  # name of the docker container
         "PORT": "5432",  # Default PostgreSQL port
     }
 }

@@ -3,6 +3,7 @@
 *.bak
 *.db
 .coverage
+.DS_Store
 .tox
 .venv
 .vscode
