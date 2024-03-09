@@ -4,6 +4,7 @@
 *.db
 .coverage
 .DS_Store
+.env
 .tox
 .venv
 .vscode

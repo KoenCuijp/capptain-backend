@@ -1,3 +1,21 @@
+"""
+Contains the settings for the Capptain project.
+
+decouple.config searches for the secrets in the following order:
+    1. Take the secret from an evironment value if it's set there
+    2. Take the secret from the .env file (or .ini if your using that)
+    3. Take the secret from the default value (2nd parameter of config())
+
+This way we keep secrets out of our codebase and we have the option of overriding 
+a secret with an environment variable (no strict need to deploy to override a secret).
+"""
+
+from decouple import config
+
+SECRET_KEY = config("SECRET_KEY")
+
+DEBUG = True
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -9,7 +27,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "www.mysite.com", "172.18.0.2"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "www.mysite.com", "172.18.0.2"]
 ROOT_URLCONF = "capptain.urls"
 
 INSTALLED_APPS = [

@@ -4,7 +4,7 @@ services:
   capptain-backend:
     container_name: capptain-backend
     build: .
-    #command: poetry run python manage.py runserver 0.0.0.0:8000
+    restart: unless-stopped
     ports:
       - '8000:8000'
     volumes:
