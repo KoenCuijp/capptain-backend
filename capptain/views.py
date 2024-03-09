@@ -9,11 +9,21 @@ from .serializers import CreateMatchSarializer, GetMatchSerializer
 
 # Create your views here.
 class GetMatchesView(APIView):
-    all_matches = Match.objects.all()
     serializer_class = GetMatchSerializer
 
     def get(self, request: HttpRequest) -> Response:
-        ...
+        all_matches = Match.objects.all()
+
+        if not all_matches:
+            return Response(
+                {"error": "No matches found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Serialize the data
+        serializer = self.serializer_class(all_matches, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class GetMatchView(APIView):
