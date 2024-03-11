@@ -6,7 +6,7 @@ decouple.config searches for the secrets in the following order:
     2. Take the secret from the .env file (or .ini if your using that)
     3. Take the secret from the default value (2nd parameter of config())
 
-This way we keep secrets out of our codebase and we have the option of overriding 
+This way we keep secrets out of our codebase and we have the option of overriding
 a secret with an environment variable (no strict need to deploy to override a secret).
 """
 

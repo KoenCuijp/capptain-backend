@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Match(models.Model):
     opponent = models.CharField(max_length=50)
