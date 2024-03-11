@@ -16,17 +16,6 @@ from pathlib import Path
 # It takes the parent.parent.parent directory of this file
 BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "capptain",  # The name of the PostgreSQL database
-        "USER": "localhost",  # User for local development
-        "PASSWORD": "localhost",  # Password for local development
-        "HOST": "capptain-database",  # name of the docker container
-        "PORT": "5432",  # Default PostgreSQL port
-    }
-}
-
 ROOT_URLCONF = "capptain.urls"
 
 INSTALLED_APPS = [
