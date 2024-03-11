@@ -4,25 +4,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Match',
+            name="Match",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('opponent', models.CharField(max_length=50)),
-                ('home_away', models.CharField(choices=[('H', 'Home Game'), ('A', 'Away Game')], max_length=1)),
-                ('location', models.CharField(max_length=50)),
-                ('date', models.DateField()),
-                ('meet_at', models.TimeField()),
-                ('starts_at', models.TimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("opponent", models.CharField(max_length=50)),
+                (
+                    "home_away",
+                    models.CharField(
+                        choices=[("H", "Home Game"), ("A", "Away Game")], max_length=1
+                    ),
+                ),
+                ("location", models.CharField(max_length=50)),
+                ("date", models.DateField()),
+                ("meet_at", models.TimeField()),
+                ("starts_at", models.TimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
     ]

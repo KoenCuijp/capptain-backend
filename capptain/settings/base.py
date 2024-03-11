@@ -6,15 +6,15 @@ decouple.config searches for the secrets in the following order:
     2. Take the secret from the .env file (or .ini if your using that)
     3. Take the secret from the default value (2nd parameter of config())
 
-This way we keep secrets out of our codebase and we have the option of overriding 
+This way we keep secrets out of our codebase and we have the option of overriding
 a secret with an environment variable (no strict need to deploy to override a secret).
 """
 
-from decouple import config
+from pathlib import Path
 
-SECRET_KEY = config("SECRET_KEY")
-
-DEBUG = True
+# Provides easy access to the base path of the project
+# It takes the parent.parent.parent directory of this file
+BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
 DATABASES = {
     "default": {
@@ -27,7 +27,6 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "www.mysite.com", "172.18.0.2"]
 ROOT_URLCONF = "capptain.urls"
 
 INSTALLED_APPS = [
