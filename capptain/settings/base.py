@@ -10,11 +10,11 @@ This way we keep secrets out of our codebase and we have the option of overridin
 a secret with an environment variable (no strict need to deploy to override a secret).
 """
 
-from decouple import config
+from pathlib import Path
 
-SECRET_KEY = config("SECRET_KEY")
-
-DEBUG = True
+# Provides easy access to the base path of the project
+# It takes the parent.parent.parent directory of this file
+BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
 DATABASES = {
     "default": {
@@ -27,7 +27,6 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "www.mysite.com", "172.18.0.2"]
 ROOT_URLCONF = "capptain.urls"
 
 INSTALLED_APPS = [
