@@ -9,5 +9,5 @@
 .venv
 .vscode
 node_modules
+postgres-data
 poetry.lock
-test.db
