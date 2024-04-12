@@ -27,5 +27,3 @@ COPY . .
 
 # Make sure there's no virtual env, we don't need it in a container
 RUN rm -rf .venv
-
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

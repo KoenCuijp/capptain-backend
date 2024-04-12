@@ -4,13 +4,20 @@ services:
   capptain-backend:
     container_name: capptain-backend
     build: .
+    # Makes sure the service restarts on any reason except manual stops
     restart: unless-stopped
+    command: "poetry run python manage.py runserver 0.0.0.0:8000"
+    # Maps the port of the container to the same port of the django server
+    # This makes sure you can open the django app from outside of the container
     ports:
       - '8000:8000'
     volumes:
       - .:/usr/src/capptain-backend
     depends_on:
-      - capptain-database
+      # Makes sure the capptain-database container has started
+      capptain-database:
+        # Checks the healthcheck defined for the capptain-database below
+        condition: service_healthy
 
   capptain-database:
     container_name: capptain-database
@@ -24,3 +31,14 @@ services:
       - '5432:5432'
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+    # A healthcheck that tells us if postgres is finished starting up
+    # Useful for Django, as that would crash if the DB isn't ready
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready --dbname capptain --username localhost"
+        ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
