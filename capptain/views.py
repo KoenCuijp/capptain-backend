@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest
-from rest_framework import status
+from rest_framework import permissions, status, views, response
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -7,7 +10,7 @@ from .models import Match
 from .serializers import CreateMatchSarializer, GetMatchSerializer
 
 
-# Create your views here.
+# View for Capptain-specific objects
 class GetMatchesView(APIView):
     serializer_class = GetMatchSerializer
 
@@ -80,3 +83,45 @@ class CreateMatchView(APIView):
         match.save()
 
         return Response(GetMatchSerializer(match).data, status=status.HTTP_201_CREATED)
+
+
+# Login & Register flow views
+class RegisterView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        if not username or not password:
+            return response.Response(
+                {"error": "Username and password required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = User.objects.create_user(username=username, password=password)
+        return response.Response(
+            {"message": "User created"}, status=status.HTTP_201_CREATED
+        )
+
+
+class LoginView(views.APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            token, _ = Token.objects.get_or_create(user=user)
+            return response.Response({"token": token.key}, status=status.HTTP_200_OK)
+        else:
+            return response.Response(
+                {"error": "Invalid username or password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class LogoutView(views.APIView):
+    def post(self, request):
+        logout(request)
+        return response.Response({"message": "Logged out"}, status=status.HTTP_200_OK)
