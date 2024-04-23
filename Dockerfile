@@ -1,5 +1,8 @@
 FROM python:3.11-alpine
 
+# Make sure GCC and its dependencies are installed on top of the alpine image
+RUN apk add --update --upgrade gcc libffi-dev musl-dev
+
 # Make sure we have poetry to install dependencies
 RUN pip install poetry --upgrade --progress-bar off
 
