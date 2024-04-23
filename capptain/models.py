@@ -5,6 +5,8 @@ from django.db import models
 
 
 class Team(models.Model):
+    """Represent a sports team."""
+
     name = models.CharField(max_length=40)
     address = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -16,7 +18,9 @@ class PlayerRole(StrEnum):
     PLAYER = "Player"
 
 
-class TeamPlayers(models.Model):
+class TeamPlayer(models.Model):
+    """Represent a player in a team. A player can be in multiple teams."""
+
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
     role = models.CharField(
@@ -26,6 +30,8 @@ class TeamPlayers(models.Model):
 
 
 class Match(models.Model):
+    """Represent a match between two teams."""
+
     opponent = models.CharField(max_length=50)
     home_away = models.CharField(
         max_length=1, choices=[("H", "Home Game"), ("A", "Away Game")]
@@ -36,3 +42,6 @@ class Match(models.Model):
     starts_at = models.TimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Matches"
