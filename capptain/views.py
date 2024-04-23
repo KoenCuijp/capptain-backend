@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpRequest
-from rest_framework import permissions, status, views, response
+from rest_framework import permissions, response, status, views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -99,7 +99,7 @@ class RegisterView(views.APIView):
             )
         user = User.objects.create_user(username=username, password=password)
         return response.Response(
-            {"message": "User created"}, status=status.HTTP_201_CREATED
+            {"message": f"User created {user.email}"}, status=status.HTTP_201_CREATED
         )
 
 
