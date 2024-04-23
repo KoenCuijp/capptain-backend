@@ -89,7 +89,7 @@ class CreateMatchView(APIView):
 class RegisterView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         username = request.data.get("username")
         password = request.data.get("password")
         if not username or not password:
@@ -106,7 +106,7 @@ class RegisterView(views.APIView):
 class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(request, username=username, password=password)
@@ -122,6 +122,6 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         logout(request)
         return response.Response({"message": "Logged out"}, status=status.HTTP_200_OK)
