@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import HttpRequest
-from rest_framework import permissions, status, views, response
+from rest_framework import permissions, response, status, views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -89,7 +89,7 @@ class CreateMatchView(APIView):
 class RegisterView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         username = request.data.get("username")
         password = request.data.get("password")
         if not username or not password:
@@ -99,14 +99,14 @@ class RegisterView(views.APIView):
             )
         user = User.objects.create_user(username=username, password=password)
         return response.Response(
-            {"message": "User created"}, status=status.HTTP_201_CREATED
+            {"message": f"User created {user.email}"}, status=status.HTTP_201_CREATED
         )
 
 
 class LoginView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         username = request.data.get("username")
         password = request.data.get("password")
         user = authenticate(request, username=username, password=password)
@@ -122,6 +122,6 @@ class LoginView(views.APIView):
 
 
 class LogoutView(views.APIView):
-    def post(self, request):
+    def post(self, request: HttpRequest) -> response.Response:
         logout(request)
         return response.Response({"message": "Logged out"}, status=status.HTTP_200_OK)
