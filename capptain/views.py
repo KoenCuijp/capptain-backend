@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Match
-from .serializers import CreateMatchSarializer, GetMatchSerializer
+from .serializers import CreateMatchSerializer, GetMatchSerializer
 
 
 # View for Capptain-specific objects
@@ -52,7 +52,7 @@ class GetMatchView(APIView):
 
 
 class CreateMatchView(APIView):
-    serializer_class = CreateMatchSarializer
+    serializer_class = CreateMatchSerializer
 
     def post(self, request: HttpRequest) -> Response:
         if not self.request.session.exists(self.request.session.session_key):
@@ -71,6 +71,10 @@ class CreateMatchView(APIView):
         date = serializer.data.get("date")
         meet_at = serializer.data.get("meet_at")
         starts_at = serializer.data.get("starts_at")
+        joining_players = serializer.data.get("joining_players")
+        not_joining_players = serializer.data.get("not_joining_players")
+        spectating_players = serializer.data.get("spectating_players")
+        no_answer_players = serializer.data.get("no_answer_players")
 
         match = Match(
             opponent=opponent,
@@ -79,7 +83,12 @@ class CreateMatchView(APIView):
             date=date,
             meet_at=meet_at,
             starts_at=starts_at,
+            joining_players=joining_players,
+            not_joining_players=not_joining_players,
+            spectating_players=spectating_players,
+            no_answer_players=no_answer_players,
         )
+
         match.save()
 
         return Response(GetMatchSerializer(match).data, status=status.HTTP_201_CREATED)

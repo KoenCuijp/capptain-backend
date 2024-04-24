@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import Iterable, TypeVar
 
 from django.db import models
 
@@ -23,8 +23,8 @@ class ValidateModelMixin:
         self: DjangoModel,
         force_insert: bool = False,
         force_update: bool = False,
-        *args: bool | str | None,
-        **kwargs: bool | str | None,
+        *args: bool | str | Iterable[str] | None,
+        **kwargs: bool | str | Iterable[str] | None,
     ) -> None:
         """Override the save method to call full_clean before saving the model.
 

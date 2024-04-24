@@ -50,15 +50,17 @@ class Match(models.Model, ValidateModelMixin):
     date = models.DateField()
     meet_at = models.TimeField()
     starts_at = models.TimeField()
-    joining_players = models.ManyToManyField(TeamPlayer, related_name="joining_players")
+    joining_players = models.ManyToManyField(
+        TeamPlayer, related_name="joining_players", blank=True
+    )
     not_joining_players = models.ManyToManyField(
-        TeamPlayer, related_name="not_joining_players"
+        TeamPlayer, related_name="not_joining_players", blank=True
     )
     spectating_players = models.ManyToManyField(
-        TeamPlayer, related_name="spectating_players"
+        TeamPlayer, related_name="spectating_players", blank=True
     )
     no_answer_players = models.ManyToManyField(
-        TeamPlayer, related_name="no_answer_players"
+        TeamPlayer, related_name="no_answer_players", blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,31 +72,28 @@ class Match(models.Model, ValidateModelMixin):
         return f"[{self.home_away}] {self.opponent} ({self.date})"
 
     def clean(self) -> None:
-        """
-        Add custom validation for the model
-        """
-        super().clean()
-
+        """Add custom validation for the model"""
         if self.meet_at >= self.starts_at:
             raise ValidationError("Match must start after the meeting time")
 
         if self.team.name == self.opponent:
             raise ValidationError("Team cannot play against itself")
 
-        joining_players = [player.id for player in self.joining_players.all()]
-        not_joining_players = [player.id for player in self.not_joining_players.all()]
-        spectating_players = [player.id for player in self.spectating_players.all()]
-        no_answer_players = [player.id for player in self.no_answer_players.all()]
-        all_players = (
-            joining_players
-            + not_joining_players
-            + spectating_players
-            + no_answer_players
-        )
-        all_players_unique = set(all_players)
+        # TODO: enable when DB satisfies these constraints
+        # joining_players = [player.id for player in self.joining_players.all()]
+        # not_joining_players = [player.id for player in self.not_joining_players.all()]
+        # spectating_players = [player.id for player in self.spectating_players.all()]
+        # no_answer_players = [player.id for player in self.no_answer_players.all()]
+        # all_players = (
+        #     joining_players
+        #     + not_joining_players
+        #     + spectating_players
+        #     + no_answer_players
+        # )
+        # all_players_unique = set(all_players)
 
-        if len(all_players) != len(all_players_unique):
-            raise ValidationError("Players cannot be in multiple attendance lists")
+        # if len(all_players) != len(all_players_unique):
+        #     raise ValidationError("Players cannot be in multiple attendance lists")
 
-        if len(all_players) != len(self.team.teamplayer_set.all()):
-            raise ValidationError("Not all TeamPlayers are listed in attendance lists")
+        # if len(all_players) != len(self.team.teamplayer_set.all()):
+        #     raise ValidationError("Not all TeamPlayers are in attendance lists")

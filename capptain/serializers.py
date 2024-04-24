@@ -14,12 +14,16 @@ class GetMatchSerializer(serializers.ModelSerializer):
             "date",
             "meet_at",
             "starts_at",
+            "joining_players",
+            "not_joining_players",
+            "spectating_players",
+            "no_answer_players",
             "created_at",
             "updated_at",
         )
 
 
-class CreateMatchSarializer(serializers.ModelSerializer):
+class CreateMatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Match
         fields = (
@@ -29,4 +33,8 @@ class CreateMatchSarializer(serializers.ModelSerializer):
             "date",
             "meet_at",
             "starts_at",
+            "joining_players",
+            "not_joining_players",
+            "spectating_players",
+            "no_answer_players",
         )
