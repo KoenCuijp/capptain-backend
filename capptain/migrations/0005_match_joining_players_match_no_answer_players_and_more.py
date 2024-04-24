@@ -7,33 +7,45 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('capptain', '0004_rename_teamplayers_teamplayer_alter_match_options'),
+        ("capptain", "0004_rename_teamplayers_teamplayer_alter_match_options"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='match',
-            name='joining_players',
-            field=models.ManyToManyField(related_name='joining_players', to='capptain.teamplayer'),
+            model_name="match",
+            name="joining_players",
+            field=models.ManyToManyField(
+                related_name="joining_players", to="capptain.teamplayer"
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='no_answer_players',
-            field=models.ManyToManyField(related_name='no_answer_players', to='capptain.teamplayer'),
+            model_name="match",
+            name="no_answer_players",
+            field=models.ManyToManyField(
+                related_name="no_answer_players", to="capptain.teamplayer"
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='not_joining_players',
-            field=models.ManyToManyField(related_name='not_joining_players', to='capptain.teamplayer'),
+            model_name="match",
+            name="not_joining_players",
+            field=models.ManyToManyField(
+                related_name="not_joining_players", to="capptain.teamplayer"
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='spectating_players',
-            field=models.ManyToManyField(related_name='spectating_players', to='capptain.teamplayer'),
+            model_name="match",
+            name="spectating_players",
+            field=models.ManyToManyField(
+                related_name="spectating_players", to="capptain.teamplayer"
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='team',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='capptain.team'),
+            model_name="match",
+            name="team",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="capptain.team",
+            ),
         ),
     ]
