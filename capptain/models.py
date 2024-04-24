@@ -12,9 +12,8 @@ class Team(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
-
 
 
 class PlayerRole(StrEnum):
@@ -32,9 +31,8 @@ class TeamPlayer(models.Model):
         choices=[(role.name, role.value) for role in PlayerRole],
     )
 
-    def __str__(self):
-        return f'{self.player.username} ({self.role} of {self.team.name})'
-
+    def __str__(self) -> str:
+        return f"{self.player.username} ({self.role} of {self.team.name})"
 
 
 class Match(models.Model):
@@ -54,5 +52,5 @@ class Match(models.Model):
     class Meta:
         verbose_name_plural = "Matches"
 
-    def __str__(self):
-        return f'[{self.home_away}] {self.opponent} ({self.date})'
+    def __str__(self) -> str:
+        return f"[{self.home_away}] {self.opponent} ({self.date})"

@@ -10,7 +10,7 @@ on:
 
 jobs:
   format:
-    name: Check formatting
+    name: Format, lint & type checks
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         python: [ "3.11"]
-        django: ["32", "40", "41", "42", "main"]
+        django: ["42", "50", "main"]
 
     env:
       TOXENV: py${{ matrix.python }}-django${{ matrix.django }}
