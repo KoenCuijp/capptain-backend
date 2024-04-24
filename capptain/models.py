@@ -5,7 +5,7 @@ from django.db import models
 
 
 class Team(models.Model):
-    """Represent a sports team."""
+    """Represent a sports team"""
 
     name = models.CharField(max_length=40)
     address = models.CharField(max_length=50)
@@ -22,7 +22,7 @@ class PlayerRole(StrEnum):
 
 
 class TeamPlayer(models.Model):
-    """Represent a player in a team. A player can be in multiple teams."""
+    """Represent a player in a team, a player can be in multiple teams"""
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -36,8 +36,9 @@ class TeamPlayer(models.Model):
 
 
 class Match(models.Model):
-    """Represent a match between two teams."""
+    """Represent a match between two teams"""
 
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     opponent = models.CharField(max_length=50)
     home_away = models.CharField(
         max_length=1, choices=[("H", "Home Game"), ("A", "Away Game")]
@@ -46,6 +47,16 @@ class Match(models.Model):
     date = models.DateField()
     meet_at = models.TimeField()
     starts_at = models.TimeField()
+    joining_players = models.ManyToManyField(TeamPlayer, related_name="joining_players")
+    not_joining_players = models.ManyToManyField(
+        TeamPlayer, related_name="not_joining_players"
+    )
+    spectating_players = models.ManyToManyField(
+        TeamPlayer, related_name="spectating_players"
+    )
+    no_answer_players = models.ManyToManyField(
+        TeamPlayer, related_name="no_answer_players"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

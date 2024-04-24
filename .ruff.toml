@@ -11,6 +11,7 @@ lint.ignore = [
     "D203",  # 1 blank line required before class docstring
     "D212",  # Multi-line docstring summary should start at the first line
     "D213",  # Multi-line docstring summary should start at the second line
+    "D400",  # First line should end with a period
     "D404",  # First word of the docstring should not be "This"
     "D405",  # Section name should be properly capitalized
     "D406",  # Section name should end with a newline
@@ -18,6 +19,7 @@ lint.ignore = [
     "D410",  # Missing blank line after section
     "D411",  # Missing blank line before section
     "D412",  # No blank lines allowed between a section header and its content
+    "D415",  # First line should end with a period, question mark, or exclamation point
     "D416",  # Section name should end with a colon
     "D417",
     "D417",  # Missing argument description in the docstring
