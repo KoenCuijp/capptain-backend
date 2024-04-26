@@ -4,9 +4,10 @@ from django.http import HttpRequest
 from rest_framework import permissions, response, status, views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.views import APIView
 
-from .models import Match
+from .models import Match, Team
 from .serializers import CreateMatchSerializer, GetMatchSerializer
 
 
@@ -60,11 +61,13 @@ class CreateMatchView(APIView):
 
         serializer = self.serializer_class(data=request.data)
 
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response(
                 {"error": "invalid payload"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        team_id = serializer.data.get("team")
+        team = Team.objects.get(id=team_id)
         opponent = serializer.data.get("opponent")
         home_away = serializer.data.get("home_away")
         location = serializer.data.get("location")
@@ -77,17 +80,21 @@ class CreateMatchView(APIView):
         no_answer_players = serializer.data.get("no_answer_players")
 
         match = Match(
+            team=team,
             opponent=opponent,
             home_away=home_away,
             location=location,
             date=date,
             meet_at=meet_at,
             starts_at=starts_at,
-            joining_players=joining_players,
-            not_joining_players=not_joining_players,
-            spectating_players=spectating_players,
-            no_answer_players=no_answer_players,
         )
+
+        match.save()
+
+        match.joining_players.set(joining_players)
+        match.not_joining_players.set(not_joining_players)
+        match.spectating_players.set(spectating_players)
+        match.no_answer_players.set(no_answer_players)
 
         match.save()
 
