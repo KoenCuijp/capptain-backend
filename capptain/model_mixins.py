@@ -1,8 +1,21 @@
-from typing import Iterable, TypeVar
+from typing import Iterable, Protocol, Self
 
-from django.db import models
 
-DjangoModel = TypeVar("DjangoModel", bound=models.Model)
+class DjangoModel(Protocol):
+    def save(
+        self: Self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: str | None = "default",
+        update_fields: Iterable[str] | None = None,
+    ) -> None: ...
+
+    def full_clean(
+        self,
+        exclude: Iterable[str] | None = None,
+        validate_unique: bool = True,
+        validate_constraints: bool = True,
+    ) -> None: ...
 
 
 class ValidateModelMixin:
@@ -14,6 +27,7 @@ class ValidateModelMixin:
     Django's model.save() doesn't call full_clean() by default. More info:
     * "Why doesn't django's model.save() call full clean?"
         http://stackoverflow.com/questions/4441539/
+
     * "Model docs imply that ModelForm will call Model.full_clean(),
         but it won't."
         https://code.djangoproject.com/ticket/13100
@@ -23,8 +37,8 @@ class ValidateModelMixin:
         self: DjangoModel,
         force_insert: bool = False,
         force_update: bool = False,
-        *args: bool | str | Iterable[str] | None,
-        **kwargs: bool | str | Iterable[str] | None,
+        using: str | None = "default",  # DEFAULT_DB_ALIAS
+        update_fields: Iterable[str] | None = None,
     ) -> None:
         """Override the save method to call full_clean before saving the model.
 
@@ -38,4 +52,4 @@ class ValidateModelMixin:
             self.full_clean()
 
         # Then save the model, passing in the original arguments
-        super().save(force_insert, force_update, *args, **kwargs)  # type: ignore
+        super().save(force_insert, force_update, using, update_fields)
