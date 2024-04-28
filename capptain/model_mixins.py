@@ -51,5 +51,10 @@ class ValidateModelMixin:
         if not (force_insert or force_update):
             self.full_clean()
 
-        # Then save the model, passing in the original arguments
-        super().save(force_insert, force_update, using, update_fields)
+        # Type ignore, because even though mypy is correct that calling
+        # save on super() here directly is not safe, we don't do that
+        # in our codebase. Instead it's called on the instance using the
+        # mixing. Ideally we'd use direct inheritance instead of a mixin,
+        # so we can guarantee super.save exists. But Django's tabel names
+        # rely on the first class inheriting models.Model being the last one.
+        super().save(force_insert, force_update, using, update_fields)  # type: ignore[safe-super]
