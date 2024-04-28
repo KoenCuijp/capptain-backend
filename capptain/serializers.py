@@ -61,6 +61,29 @@ class GetMatchSerializer(DynamicFieldsModelSerializer):
         model = Match
         fields = "__all__"
 
+    def to_representation(self, instance: Match) -> dict[str, Any]:
+        """
+        Flatten the nested objects in the response.
+        """
+        data = super().to_representation(instance)
+
+        # Flatten the nested objects
+        data["team"] = data["team"]["name"]
+        data["joining_players"] = [
+            player["player"]["username"] for player in data["joining_players"]
+        ]
+        data["not_joining_players"] = [
+            player["player"]["username"] for player in data["not_joining_players"]
+        ]
+        data["spectating_players"] = [
+            player["player"]["username"] for player in data["spectating_players"]
+        ]
+        data["no_answer_players"] = [
+            player["player"]["username"] for player in data["no_answer_players"]
+        ]
+
+        return data
+
 
 class CreateMatchSerializer(DynamicFieldsModelSerializer):
     class Meta:

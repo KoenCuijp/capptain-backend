@@ -4,7 +4,6 @@ from django.http import HttpRequest
 from rest_framework import permissions, response, status, views
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.views import APIView
 
 from .models import Match, Team
