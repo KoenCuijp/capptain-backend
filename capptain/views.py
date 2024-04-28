@@ -6,8 +6,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Match
-from .serializers import CreateMatchSarializer, GetMatchSerializer
+from .models import Match, Team, TeamPlayer
+from .serializers import CreateMatchSerializer, GetMatchSerializer
 
 
 # View for Capptain-specific objects
@@ -52,7 +52,7 @@ class GetMatchView(APIView):
 
 
 class CreateMatchView(APIView):
-    serializer_class = CreateMatchSarializer
+    serializer_class = CreateMatchSerializer
 
     def post(self, request: HttpRequest) -> Response:
         if not self.request.session.exists(self.request.session.session_key):
@@ -60,11 +60,13 @@ class CreateMatchView(APIView):
 
         serializer = self.serializer_class(data=request.data)
 
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response(
                 {"error": "invalid payload"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        team_id = serializer.data.get("team")
+        team = Team.objects.get(id=team_id)
         opponent = serializer.data.get("opponent")
         home_away = serializer.data.get("home_away")
         location = serializer.data.get("location")
@@ -73,6 +75,7 @@ class CreateMatchView(APIView):
         starts_at = serializer.data.get("starts_at")
 
         match = Match(
+            team=team,
             opponent=opponent,
             home_away=home_away,
             location=location,
@@ -80,6 +83,13 @@ class CreateMatchView(APIView):
             meet_at=meet_at,
             starts_at=starts_at,
         )
+
+        match.save()
+
+        # On creation of a match, no players have answered yet
+        no_answer_players = TeamPlayer.objects.filter(team=team)
+        match.no_answer_players.set(no_answer_players)
+
         match.save()
 
         return Response(GetMatchSerializer(match).data, status=status.HTTP_201_CREATED)

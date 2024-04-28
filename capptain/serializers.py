@@ -1,32 +1,108 @@
-from rest_framework import serializers
+from typing import Any
 
-from .models import Match
+from django.contrib.auth.models import User
+from rest_framework.serializers import ModelSerializer
+
+from .models import Match, Team, TeamPlayer
 
 
-class GetMatchSerializer(serializers.ModelSerializer):
+class DynamicFieldsModelSerializer(ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+
+    see: https://www.django-rest-framework.org/api-guide/serializers/#example
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop("fields", None)
+
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields)
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+
+class UserSerializer(DynamicFieldsModelSerializer):
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+class TeamSerializer(DynamicFieldsModelSerializer):
+    class Meta:
+        model = Team
+        fields = "__all__"
+
+
+class TeamPlayerSerializer(DynamicFieldsModelSerializer):
+    player = UserSerializer(fields=("username",))
+
+    class Meta:
+        model = TeamPlayer
+        fields = "__all__"
+
+
+class GetMatchSerializer(DynamicFieldsModelSerializer):
+    team = TeamSerializer()
+    joining_players = TeamPlayerSerializer(many=True)
+    not_joining_players = TeamPlayerSerializer(many=True)
+    spectating_players = TeamPlayerSerializer(many=True)
+    no_answer_players = TeamPlayerSerializer(many=True)
+
+    class Meta:
+        model = Match
+        fields = "__all__"
+
+    def to_representation(self, instance: Match) -> dict[str, Any]:
+        """
+        Flatten the nested objects in the response.
+        """
+        data = super().to_representation(instance)
+
+        # Flatten the nested objects
+        data["team"] = data["team"]["name"]
+        data["joining_players"] = [
+            player["player"]["username"] for player in data["joining_players"]
+        ]
+        data["not_joining_players"] = [
+            player["player"]["username"] for player in data["not_joining_players"]
+        ]
+        data["spectating_players"] = [
+            player["player"]["username"] for player in data["spectating_players"]
+        ]
+        data["no_answer_players"] = [
+            player["player"]["username"] for player in data["no_answer_players"]
+        ]
+
+        return data
+
+
+class CreateMatchSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Match
         fields = (
-            "id",
+            "team",
             "opponent",
             "home_away",
             "location",
             "date",
             "meet_at",
             "starts_at",
-            "created_at",
-            "updated_at",
+            "joining_players",
+            "not_joining_players",
+            "spectating_players",
+            "no_answer_players",
         )
 
-
-class CreateMatchSarializer(serializers.ModelSerializer):
-    class Meta:
-        model = Match
-        fields = (
-            "opponent",
-            "home_away",
-            "location",
-            "date",
-            "meet_at",
-            "starts_at",
-        )
+        def validate(self, data: dict[str, Any]) -> dict[str, Any]:
+            # TODO: check player attendance lists:
+            # https://www.django-rest-framework.org/api-guide/serializers/#object-level-validation
+            return data

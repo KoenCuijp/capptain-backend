@@ -1,11 +1,14 @@
 from enum import StrEnum
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
+
+from .model_mixins import ValidateModelMixin
 
 
 class Team(models.Model):
-    """Represent a sports team."""
+    """Represent a sports team"""
 
     name = models.CharField(max_length=40)
     address = models.CharField(max_length=50)
@@ -22,7 +25,7 @@ class PlayerRole(StrEnum):
 
 
 class TeamPlayer(models.Model):
-    """Represent a player in a team. A player can be in multiple teams."""
+    """Represent a player in a team, a player can be in multiple teams"""
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     player = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -35,9 +38,10 @@ class TeamPlayer(models.Model):
         return f"{self.player.username} ({self.role} of {self.team.name})"
 
 
-class Match(models.Model):
-    """Represent a match between two teams."""
+class Match(models.Model, ValidateModelMixin):
+    """Represent a match between two teams"""
 
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
     opponent = models.CharField(max_length=50)
     home_away = models.CharField(
         max_length=1, choices=[("H", "Home Game"), ("A", "Away Game")]
@@ -46,6 +50,18 @@ class Match(models.Model):
     date = models.DateField()
     meet_at = models.TimeField()
     starts_at = models.TimeField()
+    joining_players = models.ManyToManyField(
+        TeamPlayer, related_name="joining_players", blank=True
+    )
+    not_joining_players = models.ManyToManyField(
+        TeamPlayer, related_name="not_joining_players", blank=True
+    )
+    spectating_players = models.ManyToManyField(
+        TeamPlayer, related_name="spectating_players", blank=True
+    )
+    no_answer_players = models.ManyToManyField(
+        TeamPlayer, related_name="no_answer_players", blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,3 +70,30 @@ class Match(models.Model):
 
     def __str__(self) -> str:
         return f"[{self.home_away}] {self.opponent} ({self.date})"
+
+    def clean(self) -> None:
+        """Add custom validation for the model"""
+        if self.meet_at >= self.starts_at:
+            raise ValidationError("Match must start after the meeting time")
+
+        if self.team.name == self.opponent:
+            raise ValidationError("Team cannot play against itself")
+
+        # TODO: enable when DB satisfies these constraints
+        # joining_players = [player.id for player in self.joining_players.all()]
+        # not_joining_players = [player.id for player in self.not_joining_players.all()]
+        # spectating_players = [player.id for player in self.spectating_players.all()]
+        # no_answer_players = [player.id for player in self.no_answer_players.all()]
+        # all_players = (
+        #     joining_players
+        #     + not_joining_players
+        #     + spectating_players
+        #     + no_answer_players
+        # )
+        # all_players_unique = set(all_players)
+
+        # if len(all_players) != len(all_players_unique):
+        #     raise ValidationError("Players cannot be in multiple attendance lists")
+
+        # if len(all_players) != len(self.team.teamplayer_set.all()):
+        #     raise ValidationError("Not all TeamPlayers are in attendance lists")
