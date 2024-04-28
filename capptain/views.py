@@ -6,7 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Match, Team
+from .models import Match, Team, TeamPlayer
 from .serializers import CreateMatchSerializer, GetMatchSerializer
 
 
@@ -73,10 +73,6 @@ class CreateMatchView(APIView):
         date = serializer.data.get("date")
         meet_at = serializer.data.get("meet_at")
         starts_at = serializer.data.get("starts_at")
-        joining_players = serializer.data.get("joining_players")
-        not_joining_players = serializer.data.get("not_joining_players")
-        spectating_players = serializer.data.get("spectating_players")
-        no_answer_players = serializer.data.get("no_answer_players")
 
         match = Match(
             team=team,
@@ -90,9 +86,8 @@ class CreateMatchView(APIView):
 
         match.save()
 
-        match.joining_players.set(joining_players)
-        match.not_joining_players.set(not_joining_players)
-        match.spectating_players.set(spectating_players)
+        # On creation of a match, no players have answered yet
+        no_answer_players = TeamPlayer.objects.filter(team=team)
         match.no_answer_players.set(no_answer_players)
 
         match.save()
