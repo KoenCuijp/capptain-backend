@@ -1,33 +1,24 @@
-# Poetry Template
+# Capptain backend
+This repo contains an in-progress Django project: Capptain. The app is meant to help captains of amateur sports teams manage their team. The main usecase is to automatically chase team members to provide their availability for matches and training, as from personal experience I know that's a challenge.
 
-Django app template, using `poetry-python` as dependency manager.
+It's a backend API using Django Rest Framework. The frontend (`capptain-frontend` repo) is made with React.
 
-This project is a template that can be cloned and re-used for redistributable apps.
+## Tools used
+- `poetry` for dependency management
+- `ruff`, `black` for linting / format
+- `pre-commit` to run linting
+- `mypy` for type checking
+- `tox` and Github Actions for builds and CI
+- `docker` for containization and `docker-compose` to manage multiple containers (1: python container with django, 2: postgres database container)
 
-It includes the following:
+## running the stack
+- Make sure you have the latest version of Docker installed
+- Clone the repo
+- Run `docker compose up` (older versions of docker: `docker-compose up`, disclaimer: not sure if it's fully compatible with these older versions)
+- Run the django migrations in the docker container:
+- `docker exec -it capptain-backend poetry run python manage.py makemigrations`
+- `docker exec -it capptain-backend poetry run python manage.py migrate`
 
--   `poetry` for dependency management
--   `ruff`, `black` for linting / format
--   `pre-commit` to run linting
--   `mypy` for type checking
--   `tox` and Github Actions for builds and CI
-
-There are default config files for the linting and mypy.
-
-## Principles
-
-The motivation for this project is to provide a consistent set of standards across all YunoJuno
-public Python/Django projects. The principles we want to encourage are:
-
--   Simple for developers to get up-and-running
--   Consistent style (`black`, `ruff`)
--   Full type hinting (`mypy`)
-
-## Versioning
-
-We currently support Python 3.7+, and Django 3.2+. We will aggressively upgrade Django versions, and
-we won't introduce hacks to support breaking changes - if Django 4 introduces something that 2.2
-doesn't support we'll drop it.
 
 ## Tests
 
