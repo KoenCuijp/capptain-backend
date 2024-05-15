@@ -23,7 +23,7 @@ class GetMatchesView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Serialize the data
+        # Turn the model into JSON using the serializer
         serializer = self.serializer_class(all_matches, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
