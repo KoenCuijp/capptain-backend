@@ -1,5 +1,6 @@
 from typing import Iterable, Protocol, Self
 
+
 class DjangoModel(Protocol):
     def save(
         self: Self,

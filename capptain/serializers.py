@@ -67,6 +67,9 @@ class GetMatchSerializer(DynamicFieldsModelSerializer):
         """
         data = super().to_representation(instance)
 
+        # Change date notation
+        data["date"] = instance.date.strftime("%d %B, %Y")
+
         # Flatten the nested objects
         data["team"] = data["team"]["name"]
         data["joining_players"] = [

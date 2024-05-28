@@ -15,7 +15,7 @@ class GetMatchesView(APIView):
     serializer_class = GetMatchSerializer
 
     def get(self, request: HttpRequest) -> Response:
-        all_matches = Match.objects.all()
+        all_matches = Match.objects.order_by("date")
 
         if not all_matches:
             return Response(
