@@ -14,3 +14,8 @@ DATABASES = {
         "PORT": "5432",  # Default postgres port
     }
 }
+
+# Allow requests from the local frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
